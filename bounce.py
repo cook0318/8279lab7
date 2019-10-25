@@ -2,8 +2,7 @@
 from gfxhat import lcd 
 from gfxhat import backlight
 import time
-import random
-import click 
+import random 
 
 # function to draw object
 def displayObj(obj,x,y):
@@ -52,20 +51,51 @@ def moveObject(obj,x,y,vx,vy):
 # function to check if object cannot travel any further, and if so, changes it's directory
 def checkCollision(obj,x,y,vx,vy,Sx,Sy):
     if y >= Sy:
-        vy = -(vy)
-        randBackground()
-    if y < abs(vy):
-        vy = -(vy)
-        randBackground()
+        if y >= Sy and x >= Sx:
+            vy = -(vy)
+            vx = -(vx)
+        elif y >= Sy and x <= abs(vx):
+            vy = -(vy)
+            vx = -(vx)
+        else:
+            vy = -(vy)
+        return vx,vy
+
+    if y <= abs(vy):
+        if y <= abs(vy) and x >= Sx:
+            vy = -(vy)
+            vx = -(vx)
+        elif y <= abs(vy) and x <= abs(vx):
+            vy = -(vy)
+            vx = -(vx)
+        else:
+            vy = -(vy)
+        return vx,vy
+
     if x >= Sx:
-        vx = -(vx)
-        randBackground()
+        if x >= Sx and y >= Sy:
+            vy = -(vy)
+            vx = -(vx)
+        elif x >= Sx and y <= abs(vy):
+            vy = -(vy)
+            vx = -(vx)
+        else:
+            vx = -(vx)
+        return vx,vy
+
     if x <= abs(vx):
-        vx = -(vx)
-        randBackground()
+        if x <= abs(vx) and y <= abs(vy):
+            vy = -(vy)
+            vx = -(vx)
+        if x <= abs(vx) and y >= Sy:
+            vy = -(vy)
+            vx = -(vx)    
+        else:
+            vx = -(vx)
+        return vx,vy
     return vx,vy
 
-# extra function to change background color when directory is changed
+# extra function to change background color
 def randBackground():
     a = random.randint(0,255)
     b = random.randint(0,255)
@@ -77,7 +107,7 @@ def randBackground():
 def bounceObj(x,y,vx,vy):  
     g = 0
     while g == 0:
-        randBackground()
+        # randBackground()
         g += 1
     while g != 0:
         displayObj(obj,x,y)
@@ -91,8 +121,8 @@ ball =  [
 [0,0,0,1,1,0,0,0],
 [0,0,1,1,1,1,0,0],
 [0,1,1,1,1,1,1,0],
-[0,1,1,1,1,1,1,0],
-[0,1,1,1,1,1,1,0],
+[1,1,1,1,1,1,1,1],
+[1,1,1,1,1,1,1,1],
 [0,1,1,1,1,1,1,0],
 [0,0,1,1,1,1,0,0],
 [0,0,0,1,1,0,0,0]
@@ -103,11 +133,11 @@ obj = ball
 # variables to be set/altered
 x = 30
 y = 30
-vx = 10
-vy = 10
+vx = 4
+vy = 4
 Sx = 128 - len(obj[0]) - abs(vx)
 Sy = 64 - len(obj) - abs(vy)
-t = 0.075
+t = 0.2
 
 # main function call 
 bounceObj(x,y,vx,vy)
